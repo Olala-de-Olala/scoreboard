@@ -155,33 +155,45 @@
       const sorted = [...order].sort((a, b) => scores[b] - scores[a]);
       updateScoreboard(sorted);
 
-      // 🎉 Hiệu ứng pháo hoa bắn 3 lần, rộng hơn và chậm hơn
+      // 🎉 Hiệu ứng pháo hoa bắn 3 lần, tối ưu cho mobile
       for (let i = 0; i < 3; i++) {
         setTimeout(() => {
           // bắn từ giữa
           confetti({
-            particleCount: 120,
-            spread: 120,
-            origin: { y: 0.6 },
-            ticks: 250
+            particleCount: 80,
+            spread: 100,
+            origin: { x: 0.5, y: 0.6 },
+            ticks: 200,
+            startVelocity: 40,
+            gravity: 1.2,
+            scalar: 1.2,
+            zIndex: 9999,
           });
           // bắn thêm từ trái
           confetti({
-            particleCount: 80,
+            particleCount: 50,
             angle: 60,
-            spread: 120,
+            spread: 100,
             origin: { x: 0, y: 0.6 },
-            ticks: 250
+            ticks: 200,
+            startVelocity: 40,
+            gravity: 1.2,
+            scalar: 1.2,
+            zIndex: 9999,
           });
           // bắn thêm từ phải
           confetti({
-            particleCount: 80,
+            particleCount: 50,
             angle: 120,
-            spread: 120,
+            spread: 100,
             origin: { x: 1, y: 0.6 },
-            ticks: 250
+            ticks: 200,
+            startVelocity: 40,
+            gravity: 1.2,
+            scalar: 1.2,
+            zIndex: 9999,
           });
-        }, i * 650); // chậm hơn 30% so với 500ms
+        }, i * 650); // chậm 30% giữa các lần
       }
     }
 
