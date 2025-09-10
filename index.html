@@ -73,6 +73,18 @@
       border: none;
       cursor: pointer;
     }
+    .btn-remove {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      background: crimson;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-remove:hover {
+      background: darkred;
+    }
   </style>
 </head>
 <body>
@@ -96,7 +108,7 @@
   <div class="card">
     <h2>Bảng xếp hạng</h2>
     <table id="scoreboard">
-      <tr><th>Đội</th><th>Điểm</th><th>Hành động</th></tr>
+      <tr><th>Đội</th><th>Điểm</th><th>Hành động</th><th>Xóa</th></tr>
     </table>
   </div>
 
@@ -151,55 +163,32 @@
       updateScoreboard(order);
     }
 
+    function removeTeam(team) {
+      delete scores[team];
+      order = order.filter(t => t !== team);
+      updateScoreboard(order);
+    }
+
     function sortTeams() {
       const sorted = [...order].sort((a, b) => scores[b] - scores[a]);
       updateScoreboard(sorted);
 
-      // 🎉 Hiệu ứng pháo hoa bắn 3 lần, tối ưu cho mobile
-      for (let i = 0; i < 3; i++) {
-        setTimeout(() => {
-          // bắn từ giữa
-          confetti({
-            particleCount: 80,
-            spread: 100,
-            origin: { x: 0.5, y: 0.6 },
-            ticks: 200,
-            startVelocity: 40,
-            gravity: 1.2,
-            scalar: 1.2,
-            zIndex: 9999,
-          });
-          // bắn thêm từ trái
-          confetti({
-            particleCount: 50,
-            angle: 60,
-            spread: 100,
-            origin: { x: 0, y: 0.6 },
-            ticks: 200,
-            startVelocity: 40,
-            gravity: 1.2,
-            scalar: 1.2,
-            zIndex: 9999,
-          });
-          // bắn thêm từ phải
-          confetti({
-            particleCount: 50,
-            angle: 120,
-            spread: 100,
-            origin: { x: 1, y: 0.6 },
-            ticks: 200,
-            startVelocity: 40,
-            gravity: 1.2,
-            scalar: 1.2,
-            zIndex: 9999,
-          });
-        }, i * 650); // chậm 30% giữa các lần
-      }
+      // 🎉 Pháo hoa nổ 1 lần khi bấm nút sắp xếp
+      confetti({
+        particleCount: 120,
+        spread: 120,
+        origin: { x: 0.5, y: 0.6 },
+        ticks: 200,
+        startVelocity: 45,
+        gravity: 1.2,
+        scalar: 1.2,
+        zIndex: 9999,
+      });
     }
 
     function updateScoreboard(list) {
       const table = document.getElementById("scoreboard");
-      table.innerHTML = "<tr><th>Đội</th><th>Điểm</th><th>Hành động</th></tr>";
+      table.innerHTML = "<tr><th>Đội</th><th>Điểm</th><th>Hành động</th><th>Xóa</th></tr>";
 
       for (const team of list) {
         const { bg, strong } = getColor(team);
@@ -210,6 +199,9 @@
             <td>
               <button class="btn-small" style="background:${strong}" onclick="changeScore('${team}', 1)">+</button>
               <button class="btn-small" style="background:${strong}" onclick="changeScore('${team}', -1)">−</button>
+            </td>
+            <td>
+              <button class="btn-remove" onclick="removeTeam('${team}')">Xóa</button>
             </td>
           </tr>`;
         table.innerHTML += row;
