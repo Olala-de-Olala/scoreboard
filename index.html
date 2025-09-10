@@ -100,21 +100,24 @@
     </table>
   </div>
 
+  <!-- Thư viện pháo hoa -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
   <script>
     let scores = {};
     let colors = {};
-    let order = []; // giữ thứ tự đội khi thêm
+    let order = []; 
     let colorIndex = 0;
 
     const colorPalette = [
-      "rgba(230, 57, 70, 0.2)",   // Đỏ nhạt
-      "rgba(29, 53, 87, 0.2)",   // Xanh navy nhạt
-      "rgba(42, 157, 143, 0.2)", // Xanh teal nhạt
-      "rgba(244, 162, 97, 0.2)", // Cam nhạt
-      "rgba(231, 111, 81, 0.2)", // Gạch nhạt
-      "rgba(106, 76, 147, 0.2)", // Tím nhạt
-      "rgba(58, 134, 255, 0.2)", // Xanh dương nhạt
-      "rgba(255, 0, 110, 0.2)"   // Hồng nhạt
+      "rgba(230, 57, 70, 0.2)",
+      "rgba(29, 53, 87, 0.2)",
+      "rgba(42, 157, 143, 0.2)",
+      "rgba(244, 162, 97, 0.2)",
+      "rgba(231, 111, 81, 0.2)",
+      "rgba(106, 76, 147, 0.2)",
+      "rgba(58, 134, 255, 0.2)",
+      "rgba(255, 0, 110, 0.2)"
     ];
 
     const strongPalette = [
@@ -151,6 +154,35 @@
     function sortTeams() {
       const sorted = [...order].sort((a, b) => scores[b] - scores[a]);
       updateScoreboard(sorted);
+
+      // 🎉 Hiệu ứng pháo hoa bắn 3 lần, rộng hơn và chậm hơn
+      for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+          // bắn từ giữa
+          confetti({
+            particleCount: 120,
+            spread: 120,
+            origin: { y: 0.6 },
+            ticks: 250
+          });
+          // bắn thêm từ trái
+          confetti({
+            particleCount: 80,
+            angle: 60,
+            spread: 120,
+            origin: { x: 0, y: 0.6 },
+            ticks: 250
+          });
+          // bắn thêm từ phải
+          confetti({
+            particleCount: 80,
+            angle: 120,
+            spread: 120,
+            origin: { x: 1, y: 0.6 },
+            ticks: 250
+          });
+        }, i * 650); // chậm hơn 30% so với 500ms
+      }
     }
 
     function updateScoreboard(list) {
