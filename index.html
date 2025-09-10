@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý điểm thể thao</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      color: white;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    select, button {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      margin: 5px;
+    }
+    select {
+      border: 1px solid #ddd;
+      width: 60%;
+      max-width: 250px;
+    }
+    button {
+      background: #4facfe;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00c6ff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: #f5f5f5;
+    }
+    .score {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .btn-small {
+      padding: 8px 14px;
+      font-size: 18px;
+      margin: 2px;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>🏆 Quản lý điểm thể thao</h1>
+
+  <div class="card">
+    <h3>➕ Thêm đội</h3>
+    <select id="teamName">
+      <option value="">-- Chọn đội --</option>
+      <option value="Thủ Trưởng">Thủ Trưởng</option>
+      <option value="Đại Tá">Đại Tá</option>
+      <option value="Đức bé">Đức bé</option>
+      <option value="Quang Anh">Quang Anh</option>
+      <option value="Hưng">Hưng</option>
+      <option value="A Kiên">A Kiên</option>
+    </select>
+    <button onclick="addTeam()">Thêm</button>
+    <button onclick="sortTeams()">Sắp xếp theo điểm</button>
+  </div>
+
+  <div class="card">
+    <h2>Bảng xếp hạng</h2>
+    <table id="scoreboard">
+      <tr><th>Đội</th><th>Điểm</th><th>Hành động</th></tr>
+    </table>
+  </div>
+
+  <script>
+    let scores = {};
+    let colors = {};
+    let order = []; // giữ thứ tự đội khi thêm
+    let colorIndex = 0;
+
+    const colorPalette = [
+      "rgba(230, 57, 70, 0.2)",   // Đỏ nhạt
+      "rgba(29, 53, 87, 0.2)",   // Xanh navy nhạt
+      "rgba(42, 157, 143, 0.2)", // Xanh teal nhạt
+      "rgba(244, 162, 97, 0.2)", // Cam nhạt
+      "rgba(231, 111, 81, 0.2)", // Gạch nhạt
+      "rgba(106, 76, 147, 0.2)", // Tím nhạt
+      "rgba(58, 134, 255, 0.2)", // Xanh dương nhạt
+      "rgba(255, 0, 110, 0.2)"   // Hồng nhạt
+    ];
+
+    const strongPalette = [
+      "#E63946", "#1D3557", "#2A9D8F", "#F4A261",
+      "#E76F51", "#6A4C93", "#3A86FF", "#FF006E"
+    ];
+
+    function getColor(team) {
+      if (!(team in colors)) {
+        colors[team] = {
+          bg: colorPalette[colorIndex % colorPalette.length],
+          strong: strongPalette[colorIndex % strongPalette.length]
+        };
+        colorIndex++;
+      }
+      return colors[team];
+    }
+
+    function addTeam() {
+      const team = document.getElementById("teamName").value;
+      if (team && !(team in scores)) {
+        scores[team] = 0;
+        order.push(team);
+        updateScoreboard(order);
+      }
+      document.getElementById("teamName").value = "";
+    }
+
+    function changeScore(team, value) {
+      scores[team] += value;
+      updateScoreboard(order);
+    }
+
+    function sortTeams() {
+      const sorted = [...order].sort((a, b) => scores[b] - scores[a]);
+      updateScoreboard(sorted);
+    }
+
+    function updateScoreboard(list) {
+      const table = document.getElementById("scoreboard");
+      table.innerHTML = "<tr><th>Đội</th><th>Điểm</th><th>Hành động</th></tr>";
+
+      for (const team of list) {
+        const { bg, strong } = getColor(team);
+        const row = `
+          <tr style="background:${bg};">
+            <td style="font-weight:bold; color:${strong};">${team}</td>
+            <td class="score" style="color:${strong}">${scores[team]}</td>
+            <td>
+              <button class="btn-small" style="background:${strong}" onclick="changeScore('${team}', 1)">+</button>
+              <button class="btn-small" style="background:${strong}" onclick="changeScore('${team}', -1)">−</button>
+            </td>
+          </tr>`;
+        table.innerHTML += row;
+      }
+    }
+  </script>
+</body>
+</html>
